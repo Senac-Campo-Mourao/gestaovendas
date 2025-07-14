@@ -21,6 +21,58 @@ app.get('/cliente/:id', async (req, res) => {
     }
 });
 
+app.get('/telefone', async (req, res) => {
+    try {
+        const name = req.query.nomeCliente;
+
+        if (!name) {
+            return res.status(400).json({ message: 'Parametro inválido' });
+        }
+
+        const result = await db.query('select c.nome, t.telefone from telefone t ' +
+            'inner join cliente c on c.id_cliente = t.cliente_id_cliente' +
+            ' where c.nome ILIKE $1', [`%${name}%`]);
+
+        if (result.rows.length === 0) {
+            return res.status(400).json({ message: 'Client not found' });
+        }
+
+        res.status(200).json(result.rows);
+
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Error to find phone' });
+    }
+});
+
+app.get('/endereco', async (req, res) => {
+    try {
+        const name = req.query.nomeCliente;
+
+        if (!name) {
+            return res.status(400).json({ message: 'Parametro inválido' });
+        }
+
+        const result = await db.query('select c.nome, e.logradouro, e.numero, e.bairro, e.complemento, e.cep, m.municipio, uf.uf from endereco e ' +
+            'inner join cliente c on c.id_cliente = e.cliente_id_cliente ' +
+            'inner join municipio m on m.id_municipio = e.municipio_id_municipio ' +
+            'inner join uf on uf.id_uf = m.uf_id_uf ' +
+            'where c.nome ILIKE $1;', [`%${name}%`]);
+
+        if (result.rows.length === 0) {
+            return res.status(400).json({ message: 'Client not found' });
+        }
+
+        res.status(200).json(result.rows);
+
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Error to find endereco' });
+    }
+});
+
 app.get('/produto/:id', async (req, res) => {
 
     try {
