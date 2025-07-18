@@ -5,6 +5,34 @@ const app = express();
 
 app.use(express.json());
 
+app.post('/cliente', async (req, res) => {
+
+    try {
+
+        const { nome, email } = req.body;
+
+        if (!nome)
+            return res.status(400).json({ message: "O nome é obrigatório" });
+        
+        if(email && !/^[a-z0-9.]+@[a-z0-9]+\.[a-z]+\.([a-z]+)?$/.test(email))
+            return res.status(400).json({message: "E-mail inválido"});
+
+        const query = 'INSERT INTO cliente (nome, email, cpf) VALUES ($1, $2, $3);'
+        
+
+        res.status(200).json({
+            message: 'Cliente inserido',
+            cliente: nome,
+            email: email
+        });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Error to insert client' });
+    }
+
+});
+
 app.get('/cliente/:id', async (req, res) => {
     try {
         const { id } = req.params;
