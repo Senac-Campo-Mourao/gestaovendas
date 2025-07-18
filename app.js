@@ -17,7 +17,13 @@ app.post('/cliente', async (req, res) => {
         if (email && !/^[a-z0-9.]+@[a-z0-9]+\.[a-z]+\.([a-z]+)?$/.test(email))
             return res.status(400).json({ message: "E-mail inválido" });
 
-        const query = 'INSERT INTO cliente (nome, email, cpf) VALUES ($1, $2, $3);'
+        if (!validarCPF(cpf))
+            return res.status(400).json({ message: "CPF Inválido" });
+
+        if (existCPF(cpf))
+            return res.status(400).json({ message: "CPF já cadastrado" });
+
+        const query = 'INSERT INTO cliente (nome, email, cpf) VALUES ($1, $2, $3) RETURNING id_cliente, nome'
 
         const values = [nome, email, cpf];
 
@@ -34,6 +40,46 @@ app.post('/cliente', async (req, res) => {
     }
 
 });
+
+async function existCPF(cpf) {
+    const result = await db.query('SELECT EXISTS(SELECT 1 FROM cliente c where c.cpf=$1)', cpf);
+
+    return result.rows[0].exists;
+}
+
+function validarCPF(cpf) {
+    if (typeof cpf !== "string") return false;
+
+    // Remove caracteres não numéricos
+    cpf = cpf.replace(/[^\d]+/g, "");
+
+    if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false;
+
+    let soma = 0;
+    let resto;
+
+    // Validação do primeiro dígito
+    for (let i = 1; i <= 9; i++) {
+        soma += parseInt(cpf[i - 1]) * (11 - i);
+    }
+
+    resto = (soma * 10) % 11;
+    if (resto === 10 || resto === 11) resto = 0;
+    if (resto !== parseInt(cpf[9])) return false;
+
+    // Validação do segundo dígito
+    soma = 0;
+    for (let i = 1; i <= 10; i++) {
+        soma += parseInt(cpf[i - 1]) * (12 - i);
+    }
+
+    resto = (soma * 10) % 11;
+    if (resto === 10 || resto === 11) resto = 0;
+    if (resto !== parseInt(cpf[10])) return false;
+
+    return true;
+}
+
 
 app.get('/cliente/:id', async (req, res) => {
     try {
