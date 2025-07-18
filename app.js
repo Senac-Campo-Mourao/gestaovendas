@@ -9,21 +9,23 @@ app.post('/cliente', async (req, res) => {
 
     try {
 
-        const { nome, email } = req.body;
+        const { nome, email, cpf } = req.body;
 
         if (!nome)
             return res.status(400).json({ message: "O nome é obrigatório" });
-        
-        if(email && !/^[a-z0-9.]+@[a-z0-9]+\.[a-z]+\.([a-z]+)?$/.test(email))
-            return res.status(400).json({message: "E-mail inválido"});
+
+        if (email && !/^[a-z0-9.]+@[a-z0-9]+\.[a-z]+\.([a-z]+)?$/.test(email))
+            return res.status(400).json({ message: "E-mail inválido" });
 
         const query = 'INSERT INTO cliente (nome, email, cpf) VALUES ($1, $2, $3);'
-        
+
+        const values = [nome, email, cpf];
+
+        const result = await db.query(query, values);
 
         res.status(200).json({
             message: 'Cliente inserido',
-            cliente: nome,
-            email: email
+            cliente: result.rows[0]
         });
 
     } catch (err) {
