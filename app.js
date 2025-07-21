@@ -2,14 +2,40 @@ require('dotenv').config();
 const express = require('express');
 const db = require('./db');
 const app = express();
+const Cliente = require('./model/cliente');
+const Produto = require('./model/produto');
 
 app.use(express.json());
+
+app.post('/produto', async (req, res) => {
+    try {
+
+        const { produto, valorUnitario } = req.body;
+
+        if (!produto || !valorUnitario)
+            return res.status(400).json({ message: 'Campos obrigatórios não preenchidos' });
+
+        const newProduto = new Produto(produto, valorUnitario);
+
+        newProduto.salvar();
+
+
+    } catch (err) {
+        console.log(err);
+        res.status(500);
+    }
+
+
+});
 
 app.post('/cliente', async (req, res) => {
 
     try {
 
         const { nome, email, cpf } = req.body;
+
+        const newCliente = new Cliente(nome, email, cpf);
+        console.log(newCliente.imprimirDados());
 
         if (!nome)
             return res.status(400).json({ message: "O nome é obrigatório" });
