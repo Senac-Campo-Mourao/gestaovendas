@@ -1,9 +1,22 @@
-require('dotenv').config();
-const express = require('express');
-const db = require('./config/db');
+import dotenv from 'dotenv';
+import express from 'express';
+import cors from 'cors';
+
 const app = express();
-const Cliente = require('./model/cliente');
-const Produto = require('./model/produto');
+
+app.use(cors({
+    origin: true,
+    credencial: false
+}))
+
+app.use(express.json());
+
+
+
+
+
+
+
 
 app.use(express.json());
 
@@ -28,81 +41,10 @@ app.post('/produto', async (req, res) => {
 
 app.post('/cliente', async (req, res) => {
 
-    try {
-
-        const { nome, email, cpf } = req.body;
-
-        const newCliente = new Cliente(nome, email, cpf);
-        console.log(newCliente.imprimirDados());
-
-        if (!nome)
-            return res.status(400).json({ message: "O nome é obrigatório" });
-
-        if (email && !/^[a-z0-9.]+@[a-z0-9]+\.[a-z]+\.([a-z]+)?$/.test(email))
-            return res.status(400).json({ message: "E-mail inválido" });
-
-        if (!validarCPF(cpf))
-            return res.status(400).json({ message: "CPF Inválido" });
-
-        if (existCPF(cpf))
-            return res.status(400).json({ message: "CPF já cadastrado" });
-
-        const query = 'INSERT INTO cliente (nome, email, cpf) VALUES ($1, $2, $3) RETURNING id_cliente, nome'
-
-        const values = [nome, email, cpf];
-
-        const result = await db.query(query, values);
-
-        res.status(200).json({
-            message: 'Cliente inserido',
-            cliente: result.rows[0]
-        });
-
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: 'Error to insert client' });
-    }
+    
 
 });
 
-async function existCPF(cpf) {
-    const result = await db.query('SELECT EXISTS(SELECT 1 FROM cliente c where c.cpf=$1)', cpf);
-
-    return result.rows[0].exists;
-}
-
-function validarCPF(cpf) {
-    if (typeof cpf !== "string") return false;
-
-    // Remove caracteres não numéricos
-    cpf = cpf.replace(/[^\d]+/g, "");
-
-    if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false;
-
-    let soma = 0;
-    let resto;
-
-    // Validação do primeiro dígito
-    for (let i = 1; i <= 9; i++) {
-        soma += parseInt(cpf[i - 1]) * (11 - i);
-    }
-
-    resto = (soma * 10) % 11;
-    if (resto === 10 || resto === 11) resto = 0;
-    if (resto !== parseInt(cpf[9])) return false;
-
-    // Validação do segundo dígito
-    soma = 0;
-    for (let i = 1; i <= 10; i++) {
-        soma += parseInt(cpf[i - 1]) * (12 - i);
-    }
-
-    resto = (soma * 10) % 11;
-    if (resto === 10 || resto === 11) resto = 0;
-    if (resto !== parseInt(cpf[10])) return false;
-
-    return true;
-}
 
 
 app.get('/cliente/:id', async (req, res) => {
