@@ -1,6 +1,6 @@
 require('dotenv').config();
 const express = require('express');
-const db = require('./db');
+const db = require('./config/db');
 const app = express();
 const Cliente = require('./model/cliente');
 const Produto = require('./model/produto');
@@ -24,8 +24,6 @@ app.post('/produto', async (req, res) => {
         console.log(err);
         res.status(500);
     }
-
-
 });
 
 app.post('/cliente', async (req, res) => {

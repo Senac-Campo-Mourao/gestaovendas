@@ -1,4 +1,4 @@
-const pool = require("../db");
+const pool = require("../config/db");
 
 class Produto {
     constructor(produto, valor_unitario) {
