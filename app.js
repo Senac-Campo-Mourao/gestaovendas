@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 import express from 'express';
 import cors from 'cors';
+import clienteRoute from './routes/clienteRoute.js';
 
 const app = express();
 
@@ -11,14 +12,7 @@ app.use(cors({
 
 app.use(express.json());
 
-
-
-
-
-
-
-
-app.use(express.json());
+app.use('/cliente', clienteRoute);
 
 app.post('/produto', async (req, res) => {
     try {
@@ -36,30 +30,6 @@ app.post('/produto', async (req, res) => {
     } catch (err) {
         console.log(err);
         res.status(500);
-    }
-});
-
-app.post('/cliente', async (req, res) => {
-
-    
-
-});
-
-
-
-app.get('/cliente/:id', async (req, res) => {
-    try {
-        const { id } = req.params;
-        const result = await db.query('select * from cliente c where c.id_cliente = $1', [id]);
-
-        if (result.rows.length === 0) {
-            return res.status(400).json({ message: 'Client not found' });
-        }
-
-        res.status(200).json(result.rows[0]);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: 'Error to find client' });
     }
 });
 

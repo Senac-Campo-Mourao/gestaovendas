@@ -1,4 +1,4 @@
-import db from '../config/database.js';
+import db from '../config/db.js';
 
 export async function existCPF(cpf) {
     const result = await db.query('SELECT EXISTS(SELECT 1 FROM cliente c where c.cpf=$1)', [cpf]);
