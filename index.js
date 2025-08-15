@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 import express from 'express';
 import cors from 'cors';
 import clienteRoute from './routes/clienteRoute.js';
+import produtoRoute from './routes/produtoRoute.js';
 
 const app = express();
 
@@ -14,25 +15,9 @@ app.use(express.json());
 app.use(express.static('public'));
 
 app.use('/cliente', clienteRoute);
-
-app.post('/produto', async (req, res) => {
-    try {
-
-        const { produto, valorUnitario } = req.body;
-
-        if (!produto || !valorUnitario)
-            return res.status(400).json({ message: 'Campos obrigatórios não preenchidos' });
-
-        const newProduto = new Produto(produto, valorUnitario);
-
-        newProduto.salvar();
+app.use('/produto', produtoRoute);
 
 
-    } catch (err) {
-        console.log(err);
-        res.status(500);
-    }
-});
 
 app.get('/telefone', async (req, res) => {
     try {

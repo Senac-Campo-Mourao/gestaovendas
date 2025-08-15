@@ -1,9 +1,9 @@
 const pool = require("../config/db");
 
 class Produto {
-    constructor(produto, valor_unitario) {
+    constructor(produto, valorUnitario) {
         this.produto = produto;
-        this.valor_unitario = valor_unitario;
+        this.valor_unitario = valorUnitario;
     }
 
     imprimirDados() {

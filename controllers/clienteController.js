@@ -23,8 +23,11 @@ class ClienteController {
             if (!validarCPF(cpf))
                 return res.status(400).json({ message: "CPF Inválido" });
 
-            if (existCPF(cpf))
+            const exist = existCPF(cpf);
+            if (exist) {
+                console.log(cpf)
                 return res.status(400).json({ message: "CPF já cadastrado" });
+            }
 
             const query = 'INSERT INTO cliente (nome, email, cpf) VALUES ($1, $2, $3) RETURNING id_cliente, nome'
 
