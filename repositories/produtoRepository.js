@@ -22,7 +22,7 @@ class ProdutoRepository {
         const query = 'SELECT * FROM produto WHERE produto iLIKE $1';
         const value = [`%${nome}%`];
         const result = await db.query(query, value);
-        return result.rows.map(row => new Produto(row.produto, row.valor_unitario));
+        return result.rows.map(row => new Produto(row.id_produto, row.produto, row.valor_unitario));
     }
 }
 

@@ -40,8 +40,36 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
         crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    
+
+
+    <script>
+        $(document).ready(function () {
+            $('#produto').select2({
+                placeholder: 'Digite o nome do seu produto',
+                ajax: {
+                    url: '/produto/produtos',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return { nome: params.term };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: data.map(produto => ({
+                                id: produto.id,
+                                text: produto.produto
+                            }))
+                        };
+                    },
+                    cache: true
+                },
+                minimumInputLength: 2
+            });
+        });
+
+    </script>
 
 
 

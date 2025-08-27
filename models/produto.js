@@ -1,7 +1,8 @@
 
 class Produto {
 
-    constructor(produto, valorUnitario) {
+    constructor(id, produto, valorUnitario) {
+        this.id = id
         this.produto = produto;
         this.valorUnitario = valorUnitario;
     }
