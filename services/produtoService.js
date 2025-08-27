@@ -5,11 +5,10 @@ class ProdutoService {
 
 async criarProduto(produto){
 
+return await ProdutoRepository.create(produto);
+
 }
 
-async criarProduto(nome, valorUnitario){
-    
-}
 
 }
 
