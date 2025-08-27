@@ -1,4 +1,6 @@
+import Produto from '../models/produto.js';
 const pool = require("../config/db");
+
 
 class ProdutoRepository {
     async salvar() {
@@ -21,7 +23,7 @@ class ProdutoRepository {
         const query = 'SELECT * FROM produto WHERE nome iLIKE $1';
         const value = [`%${nome}%`];
         const result = await pool.query(query, value);
-        return result.rows;
+        return result.rows.map(row => new Produto(row.nome, row.valor_unitario));
     }
 }
 
