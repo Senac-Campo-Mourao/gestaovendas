@@ -1,12 +1,11 @@
 import Produto from '../models/produto.js';
-const pool = require("../config/db");
-
+import db from '../config/db.js'
 
 class ProdutoRepository {
     async salvar() {
         const connection = await pool.getConnection();
         try {
-            const [result] = await connection.query(
+            const [result] = await db.query(
                 'INSERT INTO produto (produto, valor_unitario) VALUES ($1, $) RETURNING id_produto, produto',
                 [this.produto, this.valor_unitario]);
 
@@ -20,10 +19,10 @@ class ProdutoRepository {
     }
 
     async buscarProdutosPorNome(nome) {
-        const query = 'SELECT * FROM produto WHERE nome iLIKE $1';
+        const query = 'SELECT * FROM produto WHERE produto iLIKE $1';
         const value = [`%${nome}%`];
-        const result = await pool.query(query, value);
-        return result.rows.map(row => new Produto(row.nome, row.valor_unitario));
+        const result = await db.query(query, value);
+        return result.rows.map(row => new Produto(row.produto, row.valor_unitario));
     }
 }
 

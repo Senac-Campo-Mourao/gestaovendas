@@ -1,10 +1,5 @@
 
 class Produto {
-    constructor(produto, valorUnitario, valorCusto) {
-        this.produto = produto;
-        this.valorUnitario = valorUnitario;
-        this.valorCusto = valorCusto
-    }
 
     constructor(produto, valorUnitario) {
         this.produto = produto;
